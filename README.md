@@ -1,42 +1,152 @@
-# 🧠 Diario Psicológico Inteligente - Backend & IA
 
-**Sistema integral para el análisis emocional mediante IA y seguimiento terapéutico**  
-*¡Colabora en este proyecto crucial para la salud mental! Últimos días para implementación.*
+# 🧠 Diario Psicológico Backend (Modular)
 
----
-
-## 📌 Descripción
-Plataforma web que permite a pacientes registrar sus estados emocionales diarios, analizándolos en tiempo real con modelos de lenguaje avanzados. Los psicólogos acceden a un panel interactivo con:
-- 📈 Gráficos dinámicos de tendencias emocionales
-- 🧩 Diagnósticos preliminares basados en IA
-- 📋 Historial clínico automatizado
-- 🔐 Sistema seguro de autenticación JWT
+Este proyecto es un backend completo para una aplicación de diario emocional inteligente.
+Incluye análisis de texto, detección de emociones, diagnósticos preliminares, autenticación JWT, API REST y posibilidad de entrenar tu propio modelo de IA.
 
 ---
 
-## 🚀 Características principales
-| Módulo         | Tecnologías Clave                 | Funcionalidades                             |
-|----------------|-----------------------------------|---------------------------------------------|
-| **Backend**    | Flask, JWT, SQLite                | API REST, Autenticación, Gestión de datos   |
-| **Frontend**   | HTML5, Chart.js, CSS3             | Dashboard interactivo, Visualización de datos |
-| **IA**         | Transformers, PyTorch             | Modelo fine-tuned para clasificación emocional |
-| **DevOps**     | Docker, Render.com                | Despliegue escalable, CI/CD ready           |
+## 🚀 Endpoints principales
+
+| Método | Ruta                       | Descripción                                  |
+|--------|----------------------------|----------------------------------------------|
+| POST   | `/login`                  | Autenticación por usuario (token JWT)        |
+| POST   | `/guardar`                | Guarda entrada analizada (requiere token)    |
+| GET    | `/historial/<usuario>`    | Muestra entradas guardadas (requiere token)  |
+| GET    | `/estadisticas/<usuario>` | Analiza emociones y sentimiento históricos    |
+| POST   | `/analizar`               | Análisis rápido sin guardar entrada          |
 
 ---
 
-## 🛠 Instalación rápida
+## 🛠 Requisitos
+
+- Python 3.8+
+- Flask, transformers, datasets, pandas, scikit-learn
+
+Instalar dependencias:
+
 ```bash
-# 1. Clonar repositorio
-git clone https://github.com/tu-usuario/diario-psicologico.git
-
-# 2. Instalar dependencias
 pip install -r requirements.txt
+```
 
-# 3. Inicializar base de datos
-python -c "from data.db import init_db; init_db()"
+---
 
-# 4. Entrenar modelo IA (opcional)
-python fine_tune_emotions.py --dataset dataset_emociones.csv
+## ▶️ Ejecución
 
-# 5. Ejecutar aplicación
+```bash
 python main.py
+```
+
+---
+
+## 🔐 Autenticación JWT
+
+1. `POST /login` con JSON:
+```json
+{ "usuario": "juan123" }
+```
+
+2. Usa el token JWT en cada llamada protegida:
+
+```
+Authorization: Bearer <token>
+```
+
+---
+
+## 📈 Estadísticas
+
+El endpoint `/estadisticas/<usuario>` analiza todas las entradas para mostrar:
+
+- Emociones más frecuentes
+- Promedio de sentimiento
+- Rango de fechas de uso
+
+---
+
+## 🧠 Entrenamiento de tu propia IA emocional
+
+### 1. 🔍 Recolecta un dataset
+
+Requiere un CSV con dos columnas:
+| texto                              | label       |
+|-----------------------------------|-------------|
+| Me siento vacío desde hace días. | depresión   |
+| Estoy muy feliz últimamente.     | alegría     |
+
+Guarda como: `dataset_emociones.csv`
+
+#### Datasets sugeridos:
+- [GoEmotions (Google)](https://github.com/google-research/goemotions)
+- [DAIC-WOZ (USC)](https://dcapswoz.ict.usc.edu/)
+- [ISEAR](https://www.unige.ch/cisa/research/materials-and-online-research/research-material/)
+
+---
+
+### 2. 🧪 Entrenar el modelo
+
+```bash
+python fine_tune_emotions.py
+```
+
+Esto entrenará un modelo con Hugging Face Transformers y lo guardará en `./modelo_emocional/`.
+
+---
+
+### 3. 🤖 Usar el modelo
+
+```bash
+python predict_emotion.py
+```
+
+Esto cargará el modelo entrenado y hará inferencias desde texto.
+
+---
+
+### 4. 🔁 Integración automática
+
+Cuando `./modelo_emocional/` está presente, el backend **usa automáticamente tu modelo entrenado** para reemplazar reglas manuales.
+
+---
+
+## 🧪 Pruebas automáticas
+
+```bash
+pytest tests/
+```
+
+Incluye pruebas de endpoints y lógica interna.
+
+---
+
+## 🐳 Docker
+
+```dockerfile
+docker build -t diario-backend .
+docker run -p 5000:5000 diario-backend
+```
+
+---
+
+## 📂 Estructura del Proyecto
+
+- `main.py` – Lanza la app
+- `app/` – Rutas y autenticación
+- `services/` – Análisis, emociones, diagnóstico, estadísticas
+- `data/` – SQLite DB
+- `core/` – JWT
+- `frontend.html` – Interfaz mínima
+- `fine_tune_emotions.py` – Entrena IA
+- `predict_emotion.py` – Predice emociones
+- `tests/` – Pruebas unitarias
+
+---
+
+Creado con ❤️ para salud mental y tecnología.
+
+---
+## 🚀 Deploy Backend con Render
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/tu-usuario/diario-backend)
+
+> 🚨 Reemplaza `https://github.com/tu-usuario/diario-backend` con el link real de tu repo
