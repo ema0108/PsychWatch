@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Diario Psicológico</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; max-width: 600px; margin: auto; }
+    textarea, input, button { width: 100%; margin-top: 10px; padding: 10px; }
+    .output { white-space: pre-wrap; background: #f3f3f3; padding: 1rem; border-radius: 5px; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h2>🧠 Diario Psicológico</h2>
+
+  <!-- Campo para ingresar el nombre del usuario -->
+  <input type="text" id="usuario" placeholder="Usuario" />
+
+  <!-- Área de texto donde el usuario escribe su entrada emocional -->
+  <textarea id="entrada" rows="6" placeholder="Escribe tu entrada emocional..."></textarea>
+
+  <!-- Botón para iniciar sesión y obtener un token JWT -->
+  <button onclick="login()">1. Iniciar sesión</button>
+
+  <!-- Botón para guardar la entrada (requiere token válido) -->
+  <button onclick="guardarEntrada()">2. Guardar entrada</button>
+
+  <!-- Área para mostrar la respuesta de la API -->
+  <div class="output" id="respuesta"></div>
+
+  <script>
+    // Variable global para guardar el token JWT
+    let token = "";
+
+    // Función que realiza el login con el backend y obtiene el token JWT
+    async function login() {
+      const usuario = document.getElementById("usuario").value;
+
+      const res = await fetch("/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ usuario }) // se envía solo el nombre de usuario
+      });
+
+      const data = await res.json();
+      token = data.token; // guardar token recibido
+
+      // Mostrar mensaje en pantalla
+      document.getElementById("respuesta").textContent = "🔐 Token obtenido correctamente.";
+    }
+
+    // Función que envía la entrada emocional al backend para guardarla
+    async function guardarEntrada() {
+      const texto = document.getElementById("entrada").value;
+      const usuario = document.getElementById("usuario").value;
+
+      const res = await fetch("/guardar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token // enviar token JWT en header
+        },
+        body: JSON.stringify({ usuario, texto })
+      });
+
+      const data = await res.json();
+
+      // Mostrar los resultados del análisis devueltos por el backend
+      document.getElementById("respuesta").textContent = JSON.stringify(data, null, 2);
+    }
+  </script>
+</body>
+</html>
