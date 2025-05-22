@@ -1,0 +1,14 @@
+
+name: diario-dsm
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+      - transformers==4.40.1
+      - datasets==2.19.0
+      - scikit-learn==1.4.1
+      - torch>=2.0.0
+      - pandas
